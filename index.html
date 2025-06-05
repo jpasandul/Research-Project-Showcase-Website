@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud-Integrated, Edge-Optimized Attendance Tracking System</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Project Face Reko</div>
+            <ul>
+                <li><a href="#about">About</a></li>
+                <li><a href="#problem">Problem</a></li>
+                <li><a href="#solution">Solution</a></li>
+                <li><a href="#architecture">Architecture</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#tech-stack">Tech Stack</a></li>
+                <li><a href="#team">Team</a></li>
+                <li><a href="#conclusion">Conclusion</a></li>
+            </ul>
+        </nav>
+        <div class="hero-content">
+            <h1>A Cloud-Integrated, Edge-Optimized Attendance Tracking System Using Facial Recognition</h1>
+            <p>Group 7 - ICT/20 Batch</p>
+            <p>Faculty of Technology, University of Sri Jayewardenepura</p>
+        </div>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About the Project</h2>
+            <p>
+                This project focuses on developing and evaluating an automated attendance tracking system leveraging a hybrid architecture.
+                It combines on-device facial embedding extraction on a low-powered Raspberry Pi with cloud-based recognition
+                and robust data management using AWS. The system aims to address the inefficiencies and inaccuracies of traditional
+                attendance methods while optimizing for cost, privacy, and scalability.
+            </p>
+        </section>
+
+        <section id="problem">
+            <h2>The Problem We Address</h2>
+            <p>
+                Traditional attendance methods (manual logs, RFID cards) are often inefficient, prone to errors (forgotten cards, manual mistakes),
+                time-consuming, and susceptible to fraudulent practices like buddy punching. Purely cloud-based facial recognition systems can suffer
+                from high bandwidth usage, latency, and privacy concerns due to constant raw image transmission. Purely edge-based systems face limitations
+                in processing power for large-scale database comparisons and managing reference data across multiple devices.
+                Our project aims to develop a system that balances edge and cloud processing to mitigate these issues, achieving high accuracy,
+                efficiency, scalability, and security while ensuring real-time feedback and mitigating privacy risks.
+            </p>
+        </section>
+
+        <section id="solution">
+            <h2>Our Solution: A Hybrid Approach</h2>
+            <p>
+                Our system employs a hybrid edge-cloud architecture:
+            </p>
+            <ul>
+                <li><strong>Edge Device (Raspberry Pi):</strong> Captures faces, detects them using OpenCV, and extracts facial embeddings locally using a custom-trained, optimized TFLite model. This minimizes raw data transmission.</li>
+                <li><strong>Secure Transmission:</strong> Embeddings are securely sent via HTTPS (with API Key authentication) to an AWS API Gateway endpoint.</li>
+                <li><strong>Cloud Backend (AWS):</strong>
+                    <ul>
+                        <li>An AWS Lambda function is triggered to compare incoming embeddings against reference embeddings stored in DynamoDB using Euclidean distance.</li>
+                        <li>It checks for duplicate attendance logs for the current day (considering Colombo time zone).</li>
+                        <li>Attendance is recorded if a unique match is found.</li>
+                    </ul>
+                </li>
+                <li><strong>Real-time Feedback:</strong> Results (success, failure, already marked) are published back to the Raspberry Pi via AWS IoT Core using MQTT for immediate display on a local GUI.</li>
+                <li><strong>Enrollment & Management:</strong> A separate enrollment application (Python Flask web app) allows administrators to register new users, capture multiple facial images, and store averaged, normalized reference embeddings in the cloud. An admin dashboard provides visibility into attendance logs and user management.</li>
+            </ul>
+        </section>
+
+        <section id="architecture">
+            <h2>System Architecture</h2>
+            <p>The system follows a distributed architecture dividing tasks between the edge device and the cloud.</p>
+            <!-- You would embed your architecture diagram here -->
+            <figure>
+                <img src="images/architecture.png" alt="System Architecture Diagram" style="width:100%; max-width:700px; display:block; margin:auto;">
+                <figcaption>High-Level System Architecture</figcaption>
+            </figure>
+            <p><em>(Include diagrams for Data Flow, Process Flow, and Database Schema if you have them and want to show them.)</em></p>
+        </section>
+
+        <section id="features">
+            <h2>Key Features</h2>
+            <ul>
+                <li>Real-time face detection and on-device embedding extraction.</li>
+                <li>Secure embedding transmission to the cloud.</li>
+                <li>Scalable cloud backend for comparison and attendance logging.</li>
+                <li>Duplicate attendance prevention with time-zone awareness.</li>
+                <li>Real-time feedback to the edge device.</li>
+                <li>Dedicated enrollment application for user registration.</li>
+                <li>Admin dashboard for viewing logs and managing users.</li>
+                <li>Optimized TFLite model for efficient edge processing.</li>
+                <li>Error handling and cooldown logic on the edge device.</li>
+            </ul>
+        </section>
+
+        <section id="tech-stack">
+            <h2>Technology Stack</h2>
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h3>Edge Device (Raspberry Pi)</h3>
+                    <ul>
+                        <li>Hardware: Raspberry Pi 4 Model B (8GB), Pi Camera v2</li>
+                        <li>OS: Raspberry Pi OS (64-bit)</li>
+                        <li>Software: Python</li>
+                        <li>Libraries: OpenCV, TFLite Runtime, Paho-MQTT, Requests, Picamera2, Tkinter, Pillow</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Cloud Backend (AWS)</h3>
+                    <ul>
+                        <li>API Gateway (REST API for embeddings)</li>
+                        <li>Lambda (Python for recognition logic)</li>
+                        <li>DynamoDB (NoSQL database for user data, embeddings, attendance logs)</li>
+                        <li>IoT Core (MQTT for real-time feedback)</li>
+                        <li>IAM (for secure access control)</li>
+                        <li>S3 (Potentially for storing enrollment images - optional)</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Enrollment & Admin Dashboard</h3>
+                    <ul>
+                        <li>Enrollment App: Python, Flask, HTML, CSS, JavaScript</li>
+                        <li>Admin Dashboard: Python, Flask, HTML, CSS, JavaScript, Boto3</li>
+                    </ul>
+                </div>
+                <div class="tech-category">
+                    <h3>Machine Learning Model</h3>
+                    <ul>
+                        <li>Base Architecture: FaceNet (inspired by MobileNetV2)</li>
+                        <li>Framework: Keras/TensorFlow</li>
+                        <li>Deployment Model: TensorFlow Lite (TFLite) with float16 quantization</li>
+                        <li>Training Dataset: Subset of VGGFace2, custom augmentation</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <section id="team">
+            <h2>The Team (Group 7)</h2>
+            <div class="team-grid">
+                <div class="team-member">
+                    <!-- <img src="images/jp_balasooriya.jpg" alt="J. P. Balasooriya"> -->
+                    <div class="member-placeholder-img">JPB</div>
+                    <h3>J. P. Balasooriya</h3>
+                    <p>ICT/20/810</p>
+                    <p>Networking Technology</p>
+                    <p><em>Key Contributions: Lead on-device software, AWS cloud backend architecture & configuration, enrollment app, admin dashboard, ML model training & evaluation.</em></p>
+                </div>
+                <div class="team-member">
+                    <!-- <img src="images/bvs_tharaka.jpg" alt="B. V. S. Tharaka"> -->
+                    <div class="member-placeholder-img">BVST</div>
+                    <h3>B. V. S. Tharaka</h3>
+                    <p>ICT/20/943</p>
+                    <p>Software Technology</p>
+                    <p><em>(Detail specific contributions here if known, or general role)</em></p>
+                </div>
+                <div class="team-member">
+                    <!-- <img src="images/jtn_perera.jpg" alt="J. T. N. Perera"> -->
+                    <div class="member-placeholder-img">JTNP</div>
+                    <h3>J. T. N. Perera</h3>
+                    <p>ICT/20/901</p>
+                    <p>Software Technology</p>
+                    <p><em>(Detail specific contributions here if known, or general role)</em></p>
+                </div>
+            </div>
+
+            <h3>Supervisors</h3>
+            <div class="supervisors">
+                <p><strong>Ms. Upeksha Hansani</strong> (Internal Supervisor), Lecturer, Department of ICT, Faculty of Technology, USJ</p>
+                <p><strong>Dr. Nimal Skandhakumar</strong> (External Supervisor)</p>
+            </div>
+        </section>
+
+        <section id="conclusion">
+            <h2>Conclusion & Future Work</h2>
+            <p>
+                This project successfully demonstrates a cloud-integrated, edge-optimized attendance tracking system using facial recognition.
+                The hybrid architecture effectively balances on-device processing for privacy and efficiency with cloud capabilities for
+                scalability and robust data management. The system achieves real-time performance, addresses key limitations of
+                traditional and purely centralized/decentralized systems, and provides a practical solution for automated attendance.
+                The individual contributions, particularly in developing the edge software, cloud backend, enrollment/admin tools, and the ML model pipeline,
+                were integral to realizing the project's objectives.
+            </p>
+            <h3>Future Work</h3>
+            <ul>
+                <li>Advanced Liveness Detection.</li>
+                <li>Check-in / Check-out logic.</li>
+                <li>Offline capabilities with embedding queueing on the edge.</li>
+                <li>Integration with external HR systems.</li>
+                <li>Advanced analytics and reporting.</li>
+                <li>Handling multiple faces simultaneously in a single frame.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer>
+        <p>© 2025 Group 7 - Faculty of Technology, University of Sri Jayewardenepura. All rights reserved.</p>
+        <p>Project Repository: <a href="[YOUR_GITHUB_REPO_LINK_HERE]" target="_blank">GitHub</a></p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
